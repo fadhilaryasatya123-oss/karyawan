@@ -24,7 +24,7 @@
         @forelse($terbaru as $p)
             <tr><td>{{ $p->karyawan->nama_lengkap }}</td><td>{{ $p->jenisCuti->nama_jenis }}</td>
                 <td>{{ $p->tanggal_mulai->format('d/m/Y') }} - {{ $p->tanggal_selesai->format('d/m/Y') }}</td>
-                <td>{{ $p->jumlah_hari }}</td><td><span class="status {{ $p->badge }}">{{ ucfirst($p->status) }}</span></td></tr>
+                <td>{{ $p->jumlah_hari }}</td><td><span class="status {{ $p->badge }}">{{ $p->status_label }}</span></td></tr>
         @empty
             <tr><td colspan="5" class="text-center text-muted py-4">Belum ada pengajuan cuti.</td></tr>
         @endforelse

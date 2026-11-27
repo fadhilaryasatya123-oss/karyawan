@@ -13,7 +13,7 @@
     <tbody>
     @forelse($data as $i => $p)
         <tr><td>{{ $i + 1 }}</td><td>{{ $p->karyawan->nik }}</td><td>{{ $p->karyawan->nama_lengkap }}</td><td>{{ $p->jenisCuti->nama_jenis }}</td>
-            <td>{{ $p->tanggal_mulai->format('d/m/Y') }}</td><td>{{ $p->tanggal_selesai->format('d/m/Y') }}</td><td>{{ $p->jumlah_hari }}</td><td>{{ ucfirst($p->status) }}</td></tr>
+            <td>{{ $p->tanggal_mulai->format('d/m/Y') }}</td><td>{{ $p->tanggal_selesai->format('d/m/Y') }}</td><td>{{ $p->jumlah_hari }}</td><td>{{ $p->status_label }}</td></tr>
     @empty
         <tr><td colspan="8" style="text-align:center">Tidak ada data pada periode ini.</td></tr>
     @endforelse

@@ -64,13 +64,13 @@ class PersetujuanController extends Controller
                         throw new \RuntimeException('Saldo cuti karyawan tidak mencukupi.');
                     }
 
-                    // saldo dipotong saat pengajuan DISETUJUI
+                    // Cadangkan saldo saat persetujuan manajer agar tidak dapat dipakai dua kali.
                     $saldo->terpakai += $p->jumlah_hari;
                     $saldo->save();
                 }
 
                 $p->update([
-                    'status' => $d['keputusan'],
+                    'status' => $d['keputusan'] === 'disetujui' ? 'menunggu_konfirmasi' : 'ditolak',
                     'manajer_id' => $request->user()->id,
                     'catatan_manajer' => $d['catatan_manajer'] ?? null,
                     'tanggal_keputusan' => now(),
@@ -87,7 +87,7 @@ class PersetujuanController extends Controller
     {
         $data = $this->milikTim($request)
             ->with(['karyawan', 'jenisCuti'])
-            ->whereIn('status', ['disetujui', 'ditolak'])
+            ->whereIn('status', ['disetujui', 'ditolak', 'menunggu_konfirmasi'])
             ->latest('tanggal_keputusan')
             ->paginate(10);
 

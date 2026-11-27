@@ -10,20 +10,27 @@
     <div class="alert alert-warning">Akun Anda belum terhubung dengan data karyawan. Minta Admin SDM untuk melengkapinya.</div>
 @else
     <h5 class="section-title" style="margin-top:.25rem">Sisa cuti tahun {{ now()->year }}</h5>
-    @if($saldo->isEmpty())
-        <div class="alert alert-info">Saldo cuti tahun ini belum dibuat. Minta Admin SDM untuk membuatnya.</div>
+    @if($jenis->isEmpty())
+        <div class="alert alert-info">Jenis cuti belum tersedia. Hubungi Admin SDM.</div>
     @else
-        <div class="ledger">
-            @foreach($saldo as $s)
-                <div class="ledger-row">
-                    <div class="ledger-name">{{ $s->jenisCuti->nama_jenis }}<small>{{ $s->terpakai }} terpakai dari {{ $s->kuota }} hari</small></div>
-                    @include('partials.tally', ['s' => $s])
-                    <div class="ledger-num"><b>{{ $s->sisa }}</b>hari lagi</div>
+        <div class="row g-3 mb-3">
+            @foreach($jenis as $j)
+                @php $s = $saldo->firstWhere('jenis_cuti_id', $j->id); @endphp
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card h-100"><div class="card-body">
+                        <div class="text-muted">{{ $j->nama_jenis }}</div>
+                        <strong class="display-6">{{ $s?->sisa ?? $j->kuota_hari }}</strong> hari tersisa
+                        <div class="small">{{ $s?->terpakai ?? 0 }} terpakai/dicadangkan dari {{ $s?->kuota ?? $j->kuota_hari }} hari</div>
+                        @if($s) @include('partials.tally', ['s' => $s]) @else <div class="small text-muted">Kuota awal (belum dibuat)</div> @endif
+                    </div></div>
                 </div>
             @endforeach
         </div>
     @endif
 
+    @if($karyawan->pengajuan()->where('status', 'menunggu_konfirmasi')->exists())
+        <div class="alert alert-info">Manajer telah menyetujui cuti Anda. <a href="{{ route('karyawan.pengajuan.index') }}">Konfirmasi melalui Riwayat Cuti</a> untuk menyelesaikan pengajuan.</div>
+    @endif
     <h5 class="section-title">Pengajuan terakhir</h5>
     <div class="card">
         <div class="table-responsive"><table class="table">
@@ -32,7 +39,7 @@
             @forelse($terbaru as $p)
                 <tr><td>{{ $p->jenisCuti->nama_jenis }}</td>
                     <td>{{ $p->tanggal_mulai->format('d/m/Y') }} - {{ $p->tanggal_selesai->format('d/m/Y') }}</td>
-                    <td>{{ $p->jumlah_hari }}</td><td><span class="status {{ $p->badge }}">{{ ucfirst($p->status) }}</span></td></tr>
+                    <td>{{ $p->jumlah_hari }}</td><td><span class="status {{ $p->badge }}">{{ $p->status_label }}</span></td></tr>
             @empty
                 <tr><td colspan="4" class="text-center text-muted py-4">Belum ada pengajuan. Klik "Ajukan cuti" untuk mulai.</td></tr>
             @endforelse
