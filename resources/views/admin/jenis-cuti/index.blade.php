@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('title', 'Jenis Cuti')
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Jenis Cuti</h4>
+<div class="page-head">
+    <div><h4>Jenis Cuti</h4><p class="page-description">Kelola kategori cuti dan kuota tahunan.</p></div>
     <a href="{{ route('admin.jenis-cuti.create') }}" class="btn btn-primary">Tambah Jenis Cuti</a>
 </div>
 <div class="card"><div class="table-responsive"><table class="table mb-0">

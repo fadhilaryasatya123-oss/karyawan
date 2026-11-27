@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('title', 'Riwayat Cuti')
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Riwayat Pengajuan Cuti</h4>
+<div class="page-head">
+    <div><h4>Riwayat Pengajuan Cuti</h4><p class="page-description">Lihat status, catatan manajer, dan konfirmasi pengajuan Anda.</p></div>
     <a href="{{ route('karyawan.pengajuan.create') }}" class="btn btn-primary">Ajukan Cuti</a>
 </div>
 <div class="card"><div class="table-responsive"><table class="table mb-0 align-middle">
@@ -27,5 +27,5 @@
         <tr><td colspan="7" class="text-center text-muted">Belum ada pengajuan.</td></tr>
     @endforelse
     </tbody></table></div></div>
-<div class="mt-3">{{ $data->links() }}</div>
+<div class="mt-3">{{ $data->links('pagination::bootstrap-5') }}</div>
 @endsection

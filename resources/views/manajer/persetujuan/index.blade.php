@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Pengajuan Menunggu')
 @section('content')
-<h4 class="mb-3">Pengajuan Cuti Menunggu Keputusan</h4>
+<div class="page-head"><div><h4>Pengajuan Cuti Menunggu Keputusan</h4><p class="page-description">Tinjau permintaan cuti dari anggota tim Anda.</p></div></div>
 <div class="card"><div class="table-responsive"><table class="table mb-0 align-middle">
     <thead><tr><th>Karyawan</th><th>Jenis</th><th>Tanggal</th><th>Hari</th><th>Diajukan</th><th></th></tr></thead>
     <tbody>
@@ -14,5 +14,5 @@
         <tr><td colspan="6" class="text-center text-muted">Tidak ada pengajuan menunggu.</td></tr>
     @endforelse
     </tbody></table></div></div>
-<div class="mt-3">{{ $data->links() }}</div>
+<div class="mt-3">{{ $data->links('pagination::bootstrap-5') }}</div>
 @endsection

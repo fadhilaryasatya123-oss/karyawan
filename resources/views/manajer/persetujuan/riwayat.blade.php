@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Riwayat Keputusan')
 @section('content')
-<h4 class="mb-3">Riwayat Keputusan</h4>
+<div class="page-head"><div><h4>Riwayat Keputusan</h4><p class="page-description">Lihat keputusan dan status konfirmasi cuti tim.</p></div></div>
 <div class="card"><div class="table-responsive"><table class="table mb-0">
     <thead><tr><th>Karyawan</th><th>Jenis</th><th>Tanggal</th><th>Hari</th><th>Status</th><th>Diputuskan</th><th>Catatan</th></tr></thead>
     <tbody>
@@ -14,5 +14,5 @@
         <tr><td colspan="7" class="text-center text-muted">Belum ada keputusan.</td></tr>
     @endforelse
     </tbody></table></div></div>
-<div class="mt-3">{{ $data->links() }}</div>
+<div class="mt-3">{{ $data->links('pagination::bootstrap-5') }}</div>
 @endsection

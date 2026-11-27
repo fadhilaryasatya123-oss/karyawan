@@ -1,12 +1,12 @@
 @extends('layouts.app')
 @section('title', 'Data Karyawan')
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Data Karyawan</h4>
+<div class="page-head">
+    <div><h4>Data Karyawan</h4><p class="page-description">Kelola akun, jabatan, dan atasan karyawan.</p></div>
     <a href="{{ route('admin.karyawan.create') }}" class="btn btn-primary">Tambah Karyawan</a>
 </div>
-<form class="row g-2 mb-3" method="GET">
-    <div class="col-md-4"><input name="q" value="{{ request('q') }}" class="form-control" placeholder="Cari nama atau NIK"></div>
+<form class="row g-2 toolbar" method="GET">
+    <div class="col-md-4"><input name="q" value="{{ request('q') }}" class="form-control" placeholder="Cari nama atau NIK" aria-label="Cari nama atau NIK"></div>
     <div class="col-auto"><button class="btn btn-outline-secondary">Cari</button></div>
 </form>
 <div class="card"><div class="table-responsive"><table class="table table-hover mb-0 align-middle">
@@ -24,5 +24,5 @@
         <tr><td colspan="8" class="text-center text-muted">Belum ada data.</td></tr>
     @endforelse
     </tbody></table></div></div>
-<div class="mt-3">{{ $data->links() }}</div>
+<div class="mt-3">{{ $data->links('pagination::bootstrap-5') }}</div>
 @endsection

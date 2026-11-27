@@ -1,11 +1,11 @@
 @extends('layouts.app')
 @section('title', 'Kuota Cuti')
 @section('content')
-<h4 class="mb-3">Kuota dan Saldo Cuti</h4>
-<div class="row g-2 mb-3">
+<div class="page-head"><div><h4>Kuota dan Saldo Cuti</h4><p class="page-description">Atur alokasi tahunan dan pantau saldo setiap karyawan.</p></div></div>
+<div class="row g-2 toolbar">
     <div class="col-auto">
         <form method="GET" class="d-flex gap-2">
-            <input type="number" name="tahun" value="{{ $tahun }}" class="form-control" style="width:110px">
+            <input type="number" name="tahun" aria-label="Tahun saldo" value="{{ $tahun }}" class="form-control" style="width:110px">
             <button class="btn btn-outline-secondary">Tampilkan</button>
         </form>
     </div>
