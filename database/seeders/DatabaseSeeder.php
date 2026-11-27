@@ -22,16 +22,16 @@ class DatabaseSeeder extends Seeder
             'nama_jenis' => $j[0], 'kuota_hari' => $j[1], 'keterangan' => $j[2],
         ]));
 
-        // Akun demo (password: password)
-        User::create(['name' => 'Admin SDM', 'email' => 'admin@ciomas.test', 'password' => 'password', 'role' => 'admin']);
+        // Akun demo lokal saja (password: password). Tidak ada email yang dikirim.
+        User::create(['name' => 'Admin SDM', 'email' => 'admin@gmail.com', 'password' => 'password', 'role' => 'admin']);
 
-        $manajer = User::create(['name' => 'Budi Manajer', 'email' => 'manajer@ciomas.test', 'password' => 'password', 'role' => 'manajer']);
+        $manajer = User::create(['name' => 'Budi Manajer', 'email' => 'manajer@gmail.com', 'password' => 'password', 'role' => 'manajer']);
         Karyawan::create([
             'user_id' => $manajer->id, 'nik' => 'MGR001', 'nama_lengkap' => 'Budi Manajer',
             'departemen' => 'Produksi', 'jabatan' => 'Manajer Produksi', 'tanggal_bergabung' => '2020-01-10',
         ]);
 
-        $karyawanUser = User::create(['name' => 'Siti Karyawan', 'email' => 'karyawan@ciomas.test', 'password' => 'password', 'role' => 'karyawan']);
+        $karyawanUser = User::create(['name' => 'Siti Karyawan', 'email' => 'karyawan@gmail.com', 'password' => 'password', 'role' => 'karyawan']);
         Karyawan::create([
             'user_id' => $karyawanUser->id, 'nik' => 'KRY001', 'nama_lengkap' => 'Siti Karyawan',
             'departemen' => 'Produksi', 'jabatan' => 'Operator Produksi',

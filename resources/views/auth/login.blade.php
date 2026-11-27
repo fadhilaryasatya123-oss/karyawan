@@ -15,7 +15,7 @@
             @endif
             <div class="mb-3">
                 <label class="form-label" for="email">Email</label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" class="form-control" autocomplete="username" required autofocus>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" class="form-control" placeholder="nama@gmail.com" autocomplete="username" required autofocus>
             </div>
             <div class="mb-4">
                 <label class="form-label" for="password">Kata sandi</label>

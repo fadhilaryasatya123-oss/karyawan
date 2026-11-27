@@ -122,4 +122,46 @@ class RevisiCutiTest extends TestCase
         $this->get(route('karyawan.pengajuan.create'))->assertOk();
         $this->get('/email/verify')->assertNotFound();
     }
+
+    public function test_migrasi_login_demo_gmail_tanpa_mengubah_password(): void
+    {
+        $migration = require database_path('migrations/2026_11_27_000002_update_demo_login_to_gmail.php');
+        foreach (['admin', 'manajer', 'karyawan'] as $role) {
+            $user = User::factory()->create([
+                'email' => $role . '@ciomas.test',
+                'role' => $role,
+                'password' => 'password',
+            ]);
+            $hash = $user->password;
+            $migration->up();
+            $user->refresh();
+
+            $this->assertSame($role . '@gmail.com', $user->email);
+            $this->assertSame($hash, $user->password);
+            $this->assertNull($user->email_verified_at);
+
+            $this->post(route('login'), [
+                'email' => $role . '@gmail.com',
+                'password' => 'password',
+            ])->assertRedirect(route('dashboard'));
+            $this->assertAuthenticatedAs($user);
+            $this->post(route('logout'))->assertRedirect(route('login'));
+        }
+    }
+
+    public function test_migrasi_tidak_menimpa_email_yang_sudah_dipakai(): void
+    {
+        $lama = User::factory()->create(['email' => 'admin@ciomas.test', 'role' => 'admin']);
+        $tujuan = User::factory()->create(['email' => 'admin@gmail.com', 'role' => 'karyawan']);
+        $migration = require database_path('migrations/2026_11_27_000002_update_demo_login_to_gmail.php');
+
+        try {
+            $migration->up();
+            $this->fail('Migrasi seharusnya menolak bentrok email.');
+        } catch (\RuntimeException $e) {
+            $this->assertStringContainsString('sudah digunakan', $e->getMessage());
+        }
+        $this->assertSame('admin@ciomas.test', $lama->fresh()->email);
+        $this->assertSame('admin@gmail.com', $tujuan->fresh()->email);
+    }
 }
