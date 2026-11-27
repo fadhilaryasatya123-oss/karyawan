@@ -11,6 +11,10 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        if ($request->user()->role !== 'admin' && ! $request->user()->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+
         return match ($request->user()->role) {
             'admin' => $this->admin(),
             'manajer' => $this->manajer($request),
@@ -48,6 +52,7 @@ class DashboardController extends Controller
 
         return view('dashboard.karyawan', [
             'karyawan' => $karyawan,
+            'jenis' => \App\Models\JenisCuti::orderBy('nama_jenis')->get(),
             'saldo' => $karyawan
                 ? SaldoCuti::with('jenisCuti')->where('karyawan_id', $karyawan->id)->where('tahun', now()->year)->get()
                 : collect(),

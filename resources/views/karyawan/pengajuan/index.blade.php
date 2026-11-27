@@ -11,9 +11,15 @@
     @forelse($data as $p)
         <tr><td>{{ $p->jenisCuti->nama_jenis }}</td>
             <td>{{ $p->tanggal_mulai->format('d/m/Y') }} - {{ $p->tanggal_selesai->format('d/m/Y') }}</td><td>{{ $p->jumlah_hari }}</td>
-            <td>{{ $p->alasan }}</td><td><span class="status {{ $p->badge }}">{{ ucfirst($p->status) }}</span></td>
-            <td class="small">{{ $p->catatan_manajer ?? '-' }}</td>
-            <td>@if($p->status === 'menunggu')
+            <td>{{ $p->alasan }}</td><td><span class="status {{ $p->badge }}">{{ $p->status_label }}</span></td>
+            <td class="small">{{ $p->catatan_manajer ?? '-' }}
+                @if($p->tanggal_konfirmasi)<div class="text-success">Dikonfirmasi {{ $p->tanggal_konfirmasi->format('d/m/Y H:i') }}</div>@endif
+            </td>
+            <td>@if($p->status === 'menunggu_konfirmasi')
+                <form method="POST" action="{{ route('karyawan.pengajuan.konfirmasi', $p) }}" onsubmit="return confirm('Konfirmasi pelaksanaan cuti ini?')">
+                    @csrf <button class="btn btn-sm btn-success">Konfirmasi Cuti</button>
+                </form>
+                @elseif($p->status === 'menunggu')
                 <form method="POST" action="{{ route('karyawan.pengajuan.destroy', $p) }}" onsubmit="return confirm('Batalkan pengajuan ini?')">
                     @csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">Batalkan</button></form>
                 @endif</td></tr>

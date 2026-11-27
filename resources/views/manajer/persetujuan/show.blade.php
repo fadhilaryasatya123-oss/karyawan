@@ -9,7 +9,7 @@
         <dt class="col-sm-3">Tanggal</dt><dd class="col-sm-9">{{ $p->tanggal_mulai->format('d/m/Y') }} - {{ $p->tanggal_selesai->format('d/m/Y') }} ({{ $p->jumlah_hari }} hari kerja)</dd>
         <dt class="col-sm-3">Alasan</dt><dd class="col-sm-9">{{ $p->alasan }}</dd>
         <dt class="col-sm-3">Sisa Saldo</dt><dd class="col-sm-9">@if($saldo){{ $saldo->sisa }} hari dari {{ $saldo->kuota }} @include('partials.tally', ['s' => $saldo])@else Belum ada saldo @endif</dd>
-        <dt class="col-sm-3">Status</dt><dd class="col-sm-9"><span class="status {{ $p->badge }}">{{ ucfirst($p->status) }}</span></dd>
+        <dt class="col-sm-3">Status</dt><dd class="col-sm-9"><span class="status {{ $p->badge }}">{{ $p->status_label }}</span></dd>
     </dl>
 </div></div>
 

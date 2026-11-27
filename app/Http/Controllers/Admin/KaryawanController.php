@@ -69,7 +69,13 @@ class KaryawanController extends Controller
             if (! empty($d['password'])) {
                 $userData['password'] = $d['password'];
             }
-            $karyawan->user->update($userData);
+            $user = $karyawan->user;
+            $emailBerubah = $user->email !== $d['email'];
+            $user->fill($userData);
+            if ($emailBerubah) {
+                $user->email_verified_at = null;
+            }
+            $user->save();
 
             $karyawan->update([
                 'nik' => $d['nik'],
@@ -100,7 +106,7 @@ class KaryawanController extends Controller
     {
         return [
             'nama_lengkap' => 'required|string|max:255',
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($k?->user_id)],
+            'email' => ['required', 'email:rfc,dns', 'max:255', Rule::unique('users', 'email')->ignore($k?->user_id)],
             'password' => [$k ? 'nullable' : 'required', 'string', 'min:6'],
             'role' => ['required', Rule::in(['manajer', 'karyawan'])],
             'nik' => ['required', 'string', 'max:50', Rule::unique('karyawan', 'nik')->ignore($k?->id)],
