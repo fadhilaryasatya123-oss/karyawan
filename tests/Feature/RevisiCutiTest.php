@@ -9,8 +9,6 @@ use App\Models\SaldoCuti;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use Tests\TestCase;
 
 class RevisiCutiTest extends TestCase
@@ -79,19 +77,49 @@ class RevisiCutiTest extends TestCase
         $this->assertEquals(7, SaldoCuti::firstOrFail()->sisa);
     }
 
-    public function test_email_harus_diverifikasi(): void
+    public function test_email_gmail_wajib_saat_membuat_dan_mengubah_akun(): void
     {
         Notification::fake();
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin);
+        $payload = [
+            'nama_lengkap' => 'Pegawai Baru', 'email' => 'pegawai@example.com',
+            'password' => 'password123', 'role' => 'karyawan', 'nik' => 'TEST003',
+            'departemen' => 'Produksi', 'jabatan' => 'Operator',
+            'atasan_id' => $this->manajer->id, 'tanggal_bergabung' => '2022-01-01',
+        ];
+
+        foreach (['pegawai@example.com', 'pegawai@gmail.com.example.org', 'gmail.com', '@gmail.com'] as $email) {
+            $this->post(route('admin.karyawan.store'), array_replace($payload, ['email' => $email]))
+                ->assertSessionHasErrors('email');
+        }
+
+        $payload['email'] = 'pegawai.uji@GMAIL.COM';
+        $this->post(route('admin.karyawan.store'), $payload)->assertRedirect(route('admin.karyawan.index'));
+        $user = User::where('email', 'pegawai.uji@gmail.com')->firstOrFail();
+        $this->assertNull($user->email_verified_at);
+
+        $this->post(route('admin.karyawan.store'), array_replace($payload, ['nik' => 'TEST004']))
+            ->assertSessionHasErrors('email');
+
+        $this->put(route('admin.karyawan.update', $user->karyawan), array_replace($payload, [
+            'email' => 'pegawai@outlook.com', 'password' => null,
+        ]))->assertSessionHasErrors('email');
+
+        $this->put(route('admin.karyawan.update', $user->karyawan), array_replace($payload, [
+            'email' => 'pegawai.baru@gmail.com', 'password' => null,
+        ]))->assertRedirect(route('admin.karyawan.index'));
+
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'email' => 'pegawai.baru@gmail.com']);
+        Notification::assertNothingSent();
+    }
+
+    public function test_akun_tidak_memerlukan_verifikasi_email(): void
+    {
         $this->pegawai->forceFill(['email_verified_at' => null])->save();
         $this->actingAs($this->pegawai);
-        $this->get(route('dashboard'))->assertRedirect(route('verification.notice'));
-        $this->get(route('karyawan.pengajuan.create'))->assertRedirect(route('verification.notice'));
-        $this->post(route('verification.send'))->assertSessionHas('success');
-        Notification::assertSentTo($this->pegawai, VerifyEmail::class);
-        $url = URL::temporarySignedRoute('verification.verify', now()->addMinutes(60), [
-            'id' => $this->pegawai->id, 'hash' => sha1($this->pegawai->email),
-        ]);
-        $this->get($url)->assertRedirect(route('dashboard'));
-        $this->assertTrue($this->pegawai->fresh()->hasVerifiedEmail());
+        $this->get(route('dashboard'))->assertOk();
+        $this->get(route('karyawan.pengajuan.create'))->assertOk();
+        $this->get('/email/verify')->assertNotFound();
     }
 }

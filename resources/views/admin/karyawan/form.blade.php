@@ -11,7 +11,7 @@
         <div class="col-md-6"><label class="form-label" for="field-nik-main">NIK</label>
             <input id="field-nik-main" name="nik" class="form-control" value="{{ old('nik', $karyawan->nik ?? '') }}" required></div>
         <div class="col-md-6"><label class="form-label" for="field-email-main">Email (untuk login)</label>
-            <input type="email" id="field-email-main" name="email" class="form-control" value="{{ old('email', $karyawan->user->email ?? '') }}" required><div class="form-text">Gunakan email aktif yang dapat diverifikasi.</div></div>
+            <input type="email" id="field-email-main" name="email" class="form-control" value="{{ old('email', $karyawan->user->email ?? '') }}" placeholder="nama@gmail.com" aria-describedby="gmail-help" pattern="[^@\s]+@[gG][mM][aA][iI][lL]\.[cC][oO][mM]" required><div class="form-text" id="gmail-help">Wajib menggunakan alamat berakhiran @gmail.com. Tidak ada pengiriman email.</div></div>
         <div class="col-md-6"><label class="form-label" for="field-password-main">Password {{ $karyawan ? '(kosongkan jika tidak diubah)' : '' }}</label>
             <input type="password" id="field-password-main" name="password" class="form-control" {{ $karyawan ? '' : 'required' }}></div>
         <div class="col-md-4"><label class="form-label" for="field-role-main">Peran</label>

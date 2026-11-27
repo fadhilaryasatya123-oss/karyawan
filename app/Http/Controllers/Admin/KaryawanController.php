@@ -31,7 +31,12 @@ class KaryawanController extends Controller
 
     public function store(Request $request)
     {
-        $d = $request->validate($this->rules());
+        $request->merge(['email' => is_string($request->input('email')) ? strtolower(trim($request->input('email'))) : $request->input('email')]);
+        $d = $request->validate($this->rules(), [
+            'email.email' => 'Masukkan alamat email yang valid.',
+            'email.regex' => 'Email wajib berakhiran @gmail.com.',
+            'email.unique' => 'Email sudah digunakan oleh akun lain.',
+        ]);
 
         DB::transaction(function () use ($d) {
             $user = User::create([
@@ -62,20 +67,19 @@ class KaryawanController extends Controller
 
     public function update(Request $request, Karyawan $karyawan)
     {
-        $d = $request->validate($this->rules($karyawan));
+        $request->merge(['email' => is_string($request->input('email')) ? strtolower(trim($request->input('email'))) : $request->input('email')]);
+        $d = $request->validate($this->rules($karyawan), [
+            'email.email' => 'Masukkan alamat email yang valid.',
+            'email.regex' => 'Email wajib berakhiran @gmail.com.',
+            'email.unique' => 'Email sudah digunakan oleh akun lain.',
+        ]);
 
         DB::transaction(function () use ($d, $karyawan) {
             $userData = ['name' => $d['nama_lengkap'], 'email' => $d['email'], 'role' => $d['role']];
             if (! empty($d['password'])) {
                 $userData['password'] = $d['password'];
             }
-            $user = $karyawan->user;
-            $emailBerubah = $user->email !== $d['email'];
-            $user->fill($userData);
-            if ($emailBerubah) {
-                $user->email_verified_at = null;
-            }
-            $user->save();
+            $karyawan->user->update($userData);
 
             $karyawan->update([
                 'nik' => $d['nik'],
@@ -106,7 +110,7 @@ class KaryawanController extends Controller
     {
         return [
             'nama_lengkap' => 'required|string|max:255',
-            'email' => ['required', 'email:rfc,dns', 'max:255', Rule::unique('users', 'email')->ignore($k?->user_id)],
+            'email' => ['required', 'email:rfc', 'regex:/@gmail\.com\z/i', 'max:255', Rule::unique('users', 'email')->ignore($k?->user_id)],
             'password' => [$k ? 'nullable' : 'required', 'string', 'min:6'],
             'role' => ['required', Rule::in(['manajer', 'karyawan'])],
             'nik' => ['required', 'string', 'max:50', Rule::unique('karyawan', 'nik')->ignore($k?->id)],

@@ -11,10 +11,6 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        if ($request->user()->role !== 'admin' && ! $request->user()->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice');
-        }
-
         return match ($request->user()->role) {
             'admin' => $this->admin(),
             'manajer' => $this->manajer($request),
