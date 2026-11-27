@@ -2,7 +2,7 @@
 @section('title', 'Dashboard')
 @section('content')
 <div class="page-head">
-    <h4>Halo, {{ strtok(auth()->user()->name, ' ') }}</h4>
+    <div><h4>Halo, {{ strtok(auth()->user()->name, ' ') }}</h4><p class="page-description">Pantau saldo dan status pengajuan cuti Anda.</p></div>
     @if($karyawan)<a href="{{ route('karyawan.pengajuan.create') }}" class="btn btn-primary">Ajukan cuti</a>@endif
 </div>
 
@@ -17,10 +17,10 @@
             @foreach($jenis as $j)
                 @php $s = $saldo->firstWhere('jenis_cuti_id', $j->id); @endphp
                 <div class="col-sm-6 col-xl-3">
-                    <div class="card h-100"><div class="card-body">
-                        <div class="text-muted">{{ $j->nama_jenis }}</div>
-                        <strong class="display-6">{{ $s?->sisa ?? $j->kuota_hari }}</strong> hari tersisa
-                        <div class="small">{{ $s?->terpakai ?? 0 }} terpakai/dicadangkan dari {{ $s?->kuota ?? $j->kuota_hari }} hari</div>
+                    <div class="card balance-card"><div class="card-body">
+                        <div class="balance-label">{{ $j->nama_jenis }}</div>
+                        <div class="balance-number"><strong>{{ $s?->sisa ?? $j->kuota_hari }}</strong><span>hari tersisa</span></div>
+                        <div class="balance-meta">{{ $s?->terpakai ?? 0 }} terpakai/dicadangkan dari {{ $s?->kuota ?? $j->kuota_hari }} hari</div>
                         @if($s) @include('partials.tally', ['s' => $s]) @else <div class="small text-muted">Kuota awal (belum dibuat)</div> @endif
                     </div></div>
                 </div>
@@ -31,7 +31,7 @@
     @if($karyawan->pengajuan()->where('status', 'menunggu_konfirmasi')->exists())
         <div class="alert alert-info">Manajer telah menyetujui cuti Anda. <a href="{{ route('karyawan.pengajuan.index') }}">Konfirmasi melalui Riwayat Cuti</a> untuk menyelesaikan pengajuan.</div>
     @endif
-    <h5 class="section-title">Pengajuan terakhir</h5>
+    <div class="section-head"><h5 class="section-title">Pengajuan terakhir</h5><a href="{{ route('karyawan.pengajuan.index') }}">Lihat riwayat</a></div>
     <div class="card">
         <div class="table-responsive"><table class="table">
             <thead><tr><th>Jenis</th><th>Tanggal</th><th>Hari</th><th>Status</th></tr></thead>

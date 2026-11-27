@@ -1,10 +1,8 @@
-@php $total = max(0, (int) $s->kuota); @endphp
-<div class="tally" title="{{ $s->terpakai }} dari {{ $total }} hari terpakai">
-    @if($total <= 31)
-        <div class="tally-boxes">
-            @for($i = 1; $i <= $total; $i++)<span class="{{ $i <= $s->terpakai ? 'used' : '' }}"></span>@endfor
-        </div>
-    @else
-        <div class="tally-bar"><span style="width: {{ min(100, $s->terpakai / $total * 100) }}%"></span></div>
-    @endif
+@php
+    $total = max(0, (int) $s->kuota);
+    $used = max(0, (int) $s->terpakai);
+    $percent = $total > 0 ? min(100, $used / $total * 100) : 0;
+@endphp
+<div class="tally" role="img" aria-label="{{ $used }} dari {{ $total }} hari terpakai atau dicadangkan">
+    <div class="tally-bar"><span style="width: {{ $percent }}%"></span></div>
 </div>

@@ -1,16 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Dashboard')
 @section('content')
-<div class="page-head"><h4>Dashboard</h4></div>
+<div class="page-head"><div><h4>Dashboard</h4><p class="page-description">Pantau dan tinjau pengajuan cuti dari tim Anda.</p></div></div>
 
-<p class="summary">
-    @if($menunggu > 0)
-        <b>{{ $menunggu }}</b> pengajuan dari tim Anda menunggu keputusan.
-    @else
-        Tidak ada pengajuan yang menunggu keputusan.
-    @endif
-    Tim Anda terdiri dari <b>{{ $jumlahTim }}</b> orang.
-</p>
+<div class="metric-grid"><div class="metric"><div class="metric-label">Pengajuan menunggu</div><div class="metric-value">{{ $menunggu }}</div><p class="metric-note"><a href="{{ route('manajer.persetujuan.index') }}">Tinjau pengajuan</a></p></div><div class="metric"><div class="metric-label">Anggota tim</div><div class="metric-value">{{ $jumlahTim }}</div><p class="metric-note">Karyawan dalam tim Anda</p></div></div>
 
 <div class="card">
     <div class="card-header d-flex justify-content-between">
